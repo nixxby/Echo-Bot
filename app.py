@@ -1,23 +1,25 @@
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
-from datetime import date
+from datetime import datetime
 app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "Wow, You are here!!"
+    return "Wow!"
 
 @app.route("/sms", methods=['POST'])
 def sms_reply():
     """Respond to incoming calls with a simple text message."""
     # Fetch the message
-    tod = date.today()
+    now = datetime.now()
     msg = request.form.get('Body')
-    msg += 'Date received: '+ tod
+    now_dt = now.strftime("%d/%m/%Y %H:%M:%S")
+    msg+='\n*Received on:* '+str(now_dt)
 
+    print(msg)
     # Create reply
     resp = MessagingResponse()
-    resp.message("Echo: {}".format(msg))
+    resp.message("*Echo:* {}".format(msg))
 
     return str(resp)
 
